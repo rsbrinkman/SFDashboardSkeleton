@@ -1,0 +1,122 @@
+{% extends '_base.html' %}
+{% block content %}
+<div class="content">
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            In Quarter Demand
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">${{metrics['total_rev']}}</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Closed Revenue
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">${{metrics['closed_rev']}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Opps Closing EOQ
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['total_opps']}}</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Target
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">$800,000</h4>
+          </div>
+        </div>
+      </div> 
+      <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Run Rate
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['run_rate']}}%</h4>
+          </div>
+        </div>
+      </div> 
+    </div>
+    <div class="col-md-2"></div> 
+    <div class="col-md-8"> 
+      <table class="table table-striped table-bordered">
+        <tr>
+          <th>Gathering Information</th>
+          <th>Options Sent to Client</th>
+          <th>Options Sent to High</th>
+          <th>Event Selected</th>
+          <th>PL Sent</th>
+          <th>Pending Payment</th>
+          <th>Partial Funds Received</th>
+          <th>Funds Received</th>
+          <th>Closed Won</th>
+        </tr>
+        <tr>
+          <td>{{metrics['gathering_info']}}</td>
+          <td>{{metrics['options_sent']}}</td>
+          <td>{{metrics['options_high']}}</td>
+          <td>{{metrics['event_selected']}}</td>
+          <td>{{metrics['pl_sent']}}</td>
+          <td>{{metrics['pending_payment']}}</td>
+          <td>{{metrics['partial_funds']}}</td>
+          <td>{{metrics['funds_received']}}</td>
+          <td>{{metrics['closed_won']}}</td>
+      </table>
+    </div>
+    <table id="opps" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Name</th>
+          <th>Event Date</th>
+          <th>Amount</th>
+          <th># Pitched Experiences</th>
+          <th>Contact Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in results %}
+        <tr>  
+          <td>
+            <select>
+              <option {% if row.StageName == 'Gathering Information' %}selected {% endif %}>Gathering Information</option>
+              <option {% if row.StageName == 'Options Sent to Client' %}selected {% endif %}>Options Sent to Client</option>
+              <option {% if row.StageName == 'Options Sent to High' %}selected {% endif %}>Options Sent to High</option>
+              <option {% if row.StageName == 'Event Selected' %}selected {% endif %}>Event Selected</option>
+              <option {% if row.StageName == 'PL Sent' %}selected {% endif %}>PL Sent</option>
+              <option {% if row.StageName == 'Pending Customer Payment' %}selected {% endif %}>Pending Customer Payment</option>
+              <option {% if row.StageName == 'Partial Funds Received' %}selected {% endif %}>Partial Funds Received</option>
+              <option {% if row.StageName == 'Funds Received - Sign Contracts' %}selected {% endif %}>Funds Received - Sign Contracts</option>
+            </select>
+          </td>
+          <td>{{row.Name}}</td>
+          <td>{{row.Event_Date__c}}</td>
+          <td>{{row.Client_Total__c}}</td>
+          <td>{{row.Number_of_Pitched_Experiences__c}}</td>
+          <td>{{row.Contact_Name}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+</script>
+{% endblock %}

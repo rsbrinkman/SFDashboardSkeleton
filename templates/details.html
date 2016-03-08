@@ -1,0 +1,13 @@
+<div class='row'>
+  <div class='col-md-4'><h4>Pitched Experiences</h4></div>
+  <div class='col-md-1'><h4>Experiences</h4></div>
+  <div class='col-md-2'><input type="text" class="form-control" id='search-box'></div>
+  <div class='col-md-1'><button data-opp-id="{{opp_id}}" class="btn" id="search">search</button></div>
+</div>
+{% for exp in details %}
+  <div class='row'>
+    <div class='col-md-3'><input type='checkbox'> {{exp.Name}}</div> 
+    <div class='col-md-1'>$ {{exp['Total_Client_Cost_Per_Guest__c']}}</div>
+  </div>
+{% endfor %}
+

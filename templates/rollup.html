@@ -1,0 +1,91 @@
+{% extends '_base.html' %}
+{% block header_name %}
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-2">
+      <h1>{{metrics['name']}}</h1>
+    </div>
+    <div class="col-md-4">
+      <form name="search_id" id="search_id" action="/rollup" class="form form-inline">  
+        <input type="text" name="search" id="search" class="form-control" placeholder="AccountId">
+        <input type="submit" class="btn">
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card text-center"> 
+        <div class="card-header">
+          Total Events
+        </div>
+        <div class="card-block">
+          <h4 class="card-title">{{metrics['total_events']}}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center"> 
+        <div class="card-header">
+          Average NPS
+        </div>
+        <div class="card-block">
+          <h4 class="card-title">{{metrics['avg_nps']}}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center"> 
+        <div class="card-header">
+          Total Attendees
+        </div>
+        <div class="card-block">
+          <h4 class="card-title">{{metrics['attendees']}}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center"> 
+        <div class="card-header">
+          Invite Response Rate
+        </div>
+        <div class="card-block">
+          <h4 class="card-title">22%</h4>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">  
+    <div class="col-md-6">
+      <h4>Event Timeline</h4>
+      <div id="eventTimeline"></div>
+      <script type="text/javascript">
+        var svg = dimple.newSvg("#eventTimeline", 590, 400);
+        var data = {{metrics.line|safe}} 
+        var myChart = new dimple.chart(svg, data);
+        myChart.addCategoryAxis("x", "date");
+        myChart.addMeasureAxis("y", "attendees");
+        myChart.addSeries("type", dimple.plot.line);
+        myChart.addLegend(500, 20, 90, 300, "left");
+        myChart.draw();
+      </script>
+    </div>
+    <div class="col-md-6">
+      <h4>Event Types</h4>
+      <div id="chartContainer"></div>
+      <script type="text/javascript">
+        var svg = dimple.newSvg("#chartContainer", 590, 400);
+        var data = {{metrics.pie|safe}} //[{'type': 'Marketing', 'value':12}, {'type':'Other', 'value':5}]
+        var myChart = new dimple.chart(svg, data);
+        myChart.addMeasureAxis("p", "value");
+        myChart.addSeries("type", dimple.plot.pie);
+        myChart.addLegend(500, 20, 90, 300, "left");
+        myChart.draw();
+      </script>
+    </div>
+  </div> 
+</div>
+
+{% endblock %}

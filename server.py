@@ -3,6 +3,9 @@ from flask import request
 from flask.ext.sqlalchemy import SQLAlchemy
 import db
 import simplejson
+from operator import itemgetter
+
+from collections import defaultdict
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -31,9 +34,39 @@ def map():
 
   return render_template('map.html')
 
-@app.route("/stupid")
+@app.route("/sadscientists")
 def do():
-  print db.stupid()
+  results = db.inactive_users()
+  # Get Summary Metrics
+  metrics = db.get_inactive_user_metrics(results)
+  # Sort by MRR
+  sorted_results = sorted(results, key=itemgetter('price'), reverse=True)
+  
+  return render_template("non_active_users.html", results=sorted_results, metrics=metrics)
+
+@app.route("/sfsadscientists")
+def do_it():
+  results = db.inactive_users()
+  opp_ids = []
+  for row in results:
+    row['Id'] = row['id']
+    opp_ids.append(row['Id'])
+  soql_opps = ', '.join("'" + item + "'" for item in opp_ids) 
+  details = db.sf_inactive_users(soql_opps)
+  # Get Summary Metrics
+  metrics = db.get_inactive_user_metrics(details)
+  # Join results together
+  d = defaultdict(dict)
+  for l in (results, details):
+    for elem in l:
+       d[elem['Id']].update(elem)
+  l3 = d.values()
+  # Sort by MRR
+  sorted_results = sorted(l3, key=itemgetter('Contracted_MRR__c'), reverse=True)
+  
+  return render_template("non_active_users.html", results=sorted_results, metrics=metrics)
+
+
 
 @app.route("/results")
 def results():

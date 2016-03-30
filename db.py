@@ -1,15 +1,19 @@
 from sqlalchemy import *
 import beatbox
+import json
 from operator import itemgetter
 from datetime import date
 import datetime
+import psycopg2
+from psycopg2 import extras
+import query
 
 TODAY = date.today()
 EOQ_DATE = date(TODAY.year, 12, 30)
 BOQ_DATE = date(TODAY.year, 10, 1)
 TARGET = 800000
-USERNAME = ''
-PASSWORD = ''
+USERNAME = 'sbrinkman@hireology.com'
+PASSWORD = 'Hire0logyDzcs9EJ2w44ivcB2d5bgk8lbc'
 
 def sf_api():
   svc = beatbox.PythonClient()
@@ -162,7 +166,6 @@ def get_rollup_metrics(account_id=None):
        other += 1
   pie = [{'type':'Marketing', 'value': marketing},{'type':'Team Outing', 'value':team_outing}, {'type':'Other', 'value':other}]
 
-  print line
   avg_nps = nps_total/nps_count
   metrics['avg_nps'] = round(avg_nps, 2)
   metrics['pie'] = pie
@@ -174,5 +177,48 @@ def get_rollup_metrics(account_id=None):
 
   return metrics
 
-def stupid():
-  return requests.get('https://cs7.salesforce.com/services/apexrest/ExperienceFinancial?opportunityId=0063B000002GJaP&experienceId=1111&experienceName=test&experienceParentId=111111').content
+def inactive_users():
+  conn = psycopg2.connect(host="localhost", database="hireology", user="hireology")
+  cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+  cur.execute(query.NON_ACTIVE_USERS)
+  foo = cur.fetchall()
+  res = [dict(record) for record in foo]
+  
+  return res
+
+def get_inactive_user_metrics(users):
+  accounts = 0
+  total_mrr = 0
+  auto_customers = 0
+  smb_customers = 0
+  franchise_customers = 0
+  other_customers = 0
+  for row in users:
+    accounts += 1
+    total_mrr += row['Contracted_MRR__c']
+    if row['Vertical__c'] == 'Auto':
+      auto_customers += 1
+    if row['Vertical__c'] == 'Franchise':
+      franchise_customers += 1
+    if row['Vertical__c'] == 'Small Business':
+      smb_customers += 1
+    if row['Vertical__c'] == 'Other':
+      other_customers += 1
+  
+  metrics = {}
+  metrics['accounts'] = accounts
+  metrics['auto_customers'] = auto_customers
+  metrics['total_mrr'] = total_mrr
+  metrics['franchise_customers'] = franchise_customers
+  metrics['smb_customers'] = smb_customers
+  metrics['other_customers'] = other_customers
+  
+  return metrics
+
+def sf_inactive_users(opp_ids):
+  svc = sf_api()
+  query = "SELECT Name, Contracted_MRR__c, Account_Owner__c, id, Vertical__c from Account WHERE id IN (%s)" % opp_ids
+  results = svc.query(query)
+
+  return results
+

@@ -1,0 +1,90 @@
+{% extends '_base.html' %}
+{% block content %}
+<div class="content">
+  <div class="row">
+    <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Total Sad Scientists
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['accounts']}}</h4>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header" {% if metrics['total_mrr'] > 10000 %}style="background-color:#EC8181;"{% endif %}>
+            Total (Sad) MRR
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">${{metrics['total_mrr']}}</h4>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Sad Autos
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['auto_customers']}}</h4>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Sad Franchises
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['franchise_customers']}}</h4>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Sad SMBs
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['smb_customers']}}</h4>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center"> 
+          <div class="card-header">
+            Sad Others
+          </div>
+          <div class="card-block">
+            <h4 class="card-title">{{metrics['other_customers']}}</h4>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
+  <table class="table">
+    <tr>
+      <th>Name</th>
+      <th>Account Owner</th>
+      <th>Last Login Date</th>
+      <th>Price</th>
+      <th>Vertical</th>
+      <th>SF Link</th>
+    </tr>
+    {% for row in results %}
+    <tr>
+      <td>{{row['Name']}}</td>  
+      <td>{{row['Account_Owner__c']}}</td>
+      <td>{{row['sign_in']}}</td>
+      <td>{{row['Contracted_MRR__c']}}</td>
+      <td>{{row['Vertical__c']}}</td>  
+      <td><a href="https://na12.salesforce.com/{{row['Id']}}" target="_blank">{{row['Id']}}</a></td>
+    </tr>
+    {% endfor %}
+
+  </table>
+  </div>
+</div>
+{% endblock %}

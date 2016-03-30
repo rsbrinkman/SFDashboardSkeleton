@@ -1,12 +1,12 @@
 .right-header {
-  color: white;
   text-align: right;
   margin-top: 20px;
+  font-size: 25px;
 }
 
 .content {
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 @keyframes bounce {

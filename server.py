@@ -62,6 +62,7 @@ def do_it():
        d[elem['Id']].update(elem)
   l3 = d.values()
   # Sort by MRR
+  
   sorted_results = sorted(l3, key=itemgetter('Contracted_MRR__c'), reverse=True)
   
   return render_template("non_active_users.html", results=sorted_results, metrics=metrics)
@@ -121,4 +122,4 @@ def vote():
     return Response(status=200)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=6060)
+    app.run(host='0.0.0.0', port=6060, debug=False)

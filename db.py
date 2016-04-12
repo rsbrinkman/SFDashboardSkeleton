@@ -13,7 +13,7 @@ EOQ_DATE = date(TODAY.year, 12, 30)
 BOQ_DATE = date(TODAY.year, 10, 1)
 TARGET = 800000
 USERNAME = 'sbrinkman@hireology.com'
-PASSWORD = 'Hire0logyDzcs9EJ2w44ivcB2d5bgk8lbc'
+PASSWORD = ''
 
 def sf_api():
   svc = beatbox.PythonClient()
@@ -54,9 +54,7 @@ def search_experiences(query):
   svc = sf_api()
   query = "SELECT Name, Available_Markets__c, Bar_Highlights__c, Cost__c, Max_Capacity__c, Min_Capacity__c, Package_URL__c, Type FROM Event_Package__c WHERE Name LIKE '%%s%%'" % query
   results = svc.query(query)
-  print results
   for row in results:
-    print row
   return results
 
 def get_cam_metrics():
@@ -180,7 +178,7 @@ def get_rollup_metrics(account_id=None):
 def inactive_users():
   conn = psycopg2.connect(host="localhost", database="hireology", user="hireology")
   cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-  cur.execute(query.NON_ACTIVE_USERS)
+  cur.execute(query.NON_ACTIVE_USERS1)
   foo = cur.fetchall()
   res = [dict(record) for record in foo]
   
@@ -217,8 +215,15 @@ def get_inactive_user_metrics(users):
 
 def sf_inactive_users(opp_ids):
   svc = sf_api()
-  query = "SELECT Name, Contracted_MRR__c, Account_Owner__c, id, Vertical__c from Account WHERE id IN (%s)" % opp_ids
+  query = "SELECT Name, Contracted_MRR__c, Account_Owner__c, id, Vertical__c, LastActivityDate from Account WHERE  id IN (%s)" % opp_ids
+  results = svc.query(query)
+  
+  return results
+
+def get_inactive_tasks(opp_ids):
+  """DO NOT USE, HELLA SLOW"""
+  svc = sf_api()
+  query = "SELECT Subject, CreatedDate, Id, AccountId FROM Task WHERE CreatedById != '005U0000005hfRg' and AccountId IN (%s)" % opp_ids
   results = svc.query(query)
 
   return results
-

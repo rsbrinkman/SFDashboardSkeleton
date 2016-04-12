@@ -68,8 +68,7 @@
     <tr>
       <th>Name</th>
       <th>Account Owner</th>
-      <th>Last Login Date</th>
-      <th>Price</th>
+      <th>MRR</th>
       <th>Vertical</th>
       <th>SF Link</th>
     </tr>
@@ -77,9 +76,8 @@
     <tr>
       <td>{{row['Name']}}</td>  
       <td>{{row['Account_Owner__c']}}</td>
-      <td>{{row['sign_in']}}</td>
       <td>{{row['Contracted_MRR__c']}}</td>
-      <td>{{row['Vertical__c']}}</td>  
+      <td>{{row['Vertical__c']}}</td>
       <td><a href="https://na12.salesforce.com/{{row['Id']}}" target="_blank">{{row['Id']}}</a></td>
     </tr>
     {% endfor %}
